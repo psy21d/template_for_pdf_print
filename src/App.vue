@@ -20,7 +20,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 .ProseMirror {
-  width: 1280px;
+  min-width: 600px;
 
   > * + * {
     margin-top: 0.75em;
@@ -69,10 +69,9 @@ export default {
     margin: 2rem 0;
   }
   .page {
-    width: 1280px;
-    height: 1810px;
-    border: 2px solid #00cc00;
-    border-radius: 4px;
+    width: 739px;
+    height: 1067px;
+    outline: 2px solid #00cc00;
     padding: 25px;
     margin: 25px;
   }
