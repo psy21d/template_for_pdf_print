@@ -1,32 +1,23 @@
-.ProseMirror {
-  min-width: 600px;
-  padding: 15px;
-}
-
-.ProseMirror > * + * {
-  margin-top: 0.75em;
-}
-
-.ProseMirror ul,
-.ProseMirror ol {
+.ul,
+.ol {
   padding: 0 1rem;
 }
 
-.ProseMirror h1,
-.ProseMirror h2,
-.ProseMirror h3,
-.ProseMirror h4,
-.ProseMirror h5,
-.ProseMirror h6 {
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
   line-height: 1.1;
 }
 
-.ProseMirror code {
+.code {
   background-color: rgba(97, 97, 97, 0.1);
   color: #616161;
 }
 
-.ProseMirror pre {
+.pre {
   background: #0D0D0D;
   color: #FFF;
   font-family: 'JetBrainsMono', monospace;
@@ -34,37 +25,99 @@
   border-radius: 0.5rem;
 }
 
-.ProseMirror pre code {
+.pre code {
   color: inherit;
   padding: 0;
   background: none;
   font-size: 0.8rem;
 }
 
-.ProseMirror img {
+.img {
   max-width: 100%;
   height: auto;
 }
 
-.ProseMirror blockquote {
+.blockquote {
   padding-left: 1rem;
   border-left: 2px solid rgba(13, 13, 13, 0.1);
 }
 
-.ProseMirror hr {
+.hr {
   border: none;
   border-top: 2px solid rgba(13, 13, 13, 0.1);
   margin: 2rem 0;
 }
 
-.ProseMirror .page {
+.page {
   width: 1200px;
   height: 1735px;
   outline: 2px solid #00cc00;
   padding: 25px;
 }
 
-.ProseMirror .pagebreak {
+.pagebreak {
   page-break-after: always;
+}
+
+/* Table-specific styling */
+.table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.table td,
+.table th {
+  min-width: 1em;
+  border: 2px solid #ced4da;
+  padding: 3px 5px;
+  vertical-align: top;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: relative;
+}
+
+.table td > *,
+.table th > * {
+  margin-bottom: 0;
+}
+
+.table th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f1f3f5;
+}
+
+.table .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none;
+}
+
+.table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: #adf;
+  pointer-events: none;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
 }
 /*# sourceMappingURL=prosemirror.css.map */

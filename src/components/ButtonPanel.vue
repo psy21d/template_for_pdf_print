@@ -28,15 +28,15 @@
       paragraph
     </button>
     
-    <button @click="editor.chain().focus().updateMark('font_family', {font_family: 'sans-serif'})">
+    <button @click="editor.chain().focus().setFontFamily('sans-serif').run()">
       sans-serif font
     </button>
 
-    <button @click="editor.chain().focus().updateMark('font_family', {font_family: 'times-new-roman'})">
+    <button @click="editor.chain().focus().setFontFamily('times-new-roman').run()">
       times-new-roman font
     </button>
 
-    <button @click="editor.chain().focus().updateMark()">
+    <button @click="editor.chain().focus().unsetFontFamily().run()">
       default font
     </button>
 

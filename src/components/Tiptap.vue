@@ -1,15 +1,21 @@
 <template>
   <div class="sticky-panel">
-    <ButtonPanel :editor="editor" />
-    <RenderPanel :editor="editor" />
+    <ButtonPanel :editor="editor" class="panel"/>
+    <TablePanel :editor="editor" class="panel"/>
+    <RenderPanel :editor="editor" class="panel"/>
     <div>Click "new page" then "ctrl+enter" then "new page"</div>
   </div>
-  <EditorContent :editor="editor" id="editor"/>
+  <EditorContent :editor="editor" id="editor" class="panel"/>
 </template>
 
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
+import { FontFamily } from '@tiptap/extension-font-family'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import TextStyle from '@tiptap/extension-text-style'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableCell from '@tiptap/extension-table-cell'
@@ -18,51 +24,9 @@ import TextAlign from '@tiptap/extension-text-align'
 import Highlight from '@tiptap/extension-highlight'
 import ButtonPanel from '@/components/ButtonPanel.vue'
 import RenderPanel from '@/components/RenderPanel.vue'
+import TablePanel from '@/components/TablePanel.vue'
 import { Node } from '@tiptap/core'
-import { Mark } from '@tiptap/core'
-import { updateMark } from '@tiptap/core'
-
-let generateFontFamily = (mark) => {
-  if (mark.attrs.font_family) {
-      return `font-family: ${mark.attrs.font_family}`
-  } else {
-      return ''
-  }
-};
-
-class FontFamily extends Mark {
-  get name() {
-    return 'font_family'
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        font_family: {
-          default: '',
-        },
-      },
-      content: 'inline*',
-      group: 'block',
-      draggable: false,
-      parseDOM: [{
-        style: 'font-family',
-        getAttrs: mark => ({font_family: mark})
-      }],
-      toDOM: mark => [
-        'span',
-        {
-            style: generateFontFamily(mark)
-        },
-        0
-      ]
-    }
-  }
-
-  commands({ type }) {
-    return (attrs) => updateMark(type, attrs)
-  }
-}
+import { mergeAttributes } from '@tiptap/core'
 
 const CustomTableCell = TableCell.extend({
   addAttributes() {
@@ -91,15 +55,21 @@ const CustomTableCell = TableCell.extend({
 
 const PageNode = Node.create({
   name: 'PageNode',
-  content: '(inline|text)*',
+  // content: 'block+',
+  content: 'inline*',
   marks: '_',
-  group: 'block',
+  
+  inline: true,
+  group: "inline",
+  draggable: true,
+
   code: true,
+  isolating: true,
   defining: true,
   // draggable: true
   defaultOptions: {
     HTMLAttributes: {
-      class: 'page',
+      class: 'page pagebreak',
     },
   },
   addAttributes() {
@@ -119,7 +89,7 @@ const PageNode = Node.create({
     ]
   },
   renderHTML({ HTMLAttributes }) {
-    return ['div', HTMLAttributes, 0]
+    return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
   },
   addCommands() {
     return {
@@ -127,7 +97,7 @@ const PageNode = Node.create({
         return commands.setNode('PageNode', attributes)
       },
       togglePage: attributes => ({ commands }) => {
-        return commands.toggleNode('PageNode', 'paragraph', attributes)
+        return commands.toggleNode('PageNode', 'PageNode', attributes)
       },
     }
   },
@@ -138,6 +108,7 @@ export default {
     EditorContent,
     ButtonPanel,
     RenderPanel,
+    TablePanel,
   },
 
   data() {
@@ -160,6 +131,10 @@ export default {
         TableCell,
         CustomTableCell,
         TableHeader,
+        Text,
+        TextStyle,
+        Document,
+        Paragraph,
       ],
     })
     window.editor = this.editor;
@@ -170,3 +145,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.panel {
+  margin: 6px;
+}
+</style>
