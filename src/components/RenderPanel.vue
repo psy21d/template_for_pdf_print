@@ -1,5 +1,6 @@
 <template>
   <button @click="canvas">html2canvas</button>
+  <button @click="pdftoserver">pdftoserver</button>
 </template>
 
 <script>
@@ -7,11 +8,14 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas"
 // Default export is a4 paper, portrait, using millimeters for units
 //const doc = new jsPDF();
+import postToServer from "@/api/makepdf.js"
+import { makeHtml } from "@/template/makeHtml.js"
+import { css } from "@/editorcss/prosemirrorExportCss.js"
 
 let printPDF = (doc, screenshots) => {
   for (let i=0; i<screenshots.length; i++) {
     doc.addImage(screenshots[i].base64image, 0, 0);
-    if (i<screenshots.length -1 ) doc.addPage();
+    if ( i<screenshots.length -1 ) doc.addPage();
   }
   doc.save();
   doc.autoPrint();
@@ -64,6 +68,19 @@ export default {
   methods: {
     canvas() {
       tocanvas();
+    },
+    pdftoserver() {
+      let pages = document.getElementsByClassName("page")
+      let renderedPages = ""
+      for ( let i=0; i<pages.length; i++ ) {
+        renderedPages += pages[i].outerHTML
+      }
+      let html = makeHtml({
+        body: renderedPages,
+        style: css,
+      })
+      console.log(html)
+      postToServer(html)
     }
   }
 }

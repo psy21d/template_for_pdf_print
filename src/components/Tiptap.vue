@@ -1,47 +1,98 @@
 <template>
-  <ButtonPanel :editor="editor" />
-  <RenderPanel :editor="editor" />
+  <div class="sticky-panel">
+    <ButtonPanel :editor="editor" />
+    <RenderPanel :editor="editor" />
+    <div>Click "new page" then "ctrl+enter" then "new page"</div>
+  </div>
   <EditorContent :editor="editor" id="editor"/>
 </template>
 
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TextAlign from '@tiptap/extension-text-align'
+import Highlight from '@tiptap/extension-highlight'
 import ButtonPanel from '@/components/ButtonPanel.vue'
 import RenderPanel from '@/components/RenderPanel.vue'
 import { Node } from '@tiptap/core'
-import { Extension } from '@tiptap/core'
+import { Mark } from '@tiptap/core'
+import { updateMark } from '@tiptap/core'
 
-const TextAlign = Extension.create({
-  addGlobalAttributes() {
-    return [
-      {
-        // Extend the following extensions
-        types: [
-          'heading',
-          'paragraph',
-        ],
-        // … with those attributes
-        attributes: {
-          textAlign: {
-            default: 'left',
-            renderHTML: attributes => ({
-              style: `text-align: ${attributes.textAlign}`,
-            }),
-            parseHTML: element => ({
-              textAlign: element.style.textAlign || 'left',
-            }),
-          },
+let generateFontFamily = (mark) => {
+  if (mark.attrs.font_family) {
+      return `font-family: ${mark.attrs.font_family}`
+  } else {
+      return ''
+  }
+};
+
+class FontFamily extends Mark {
+  get name() {
+    return 'font_family'
+  }
+
+  get schema() {
+    return {
+      attrs: {
+        font_family: {
+          default: '',
         },
       },
-    ]
+      content: 'inline*',
+      group: 'block',
+      draggable: false,
+      parseDOM: [{
+        style: 'font-family',
+        getAttrs: mark => ({font_family: mark})
+      }],
+      toDOM: mark => [
+        'span',
+        {
+            style: generateFontFamily(mark)
+        },
+        0
+      ]
+    }
+  }
+
+  commands({ type }) {
+    return (attrs) => updateMark(type, attrs)
+  }
+}
+
+const CustomTableCell = TableCell.extend({
+  addAttributes() {
+    return {
+      // extend the existing attributes …
+      ...this.parent?.(),
+
+      // and add a new one …
+      backgroundColor: {
+        default: null,
+        parseHTML: element => {
+          return {
+            backgroundColor: element.getAttribute('data-background-color'),
+          }
+        },
+        renderHTML: attributes => {
+          return {
+            'data-background-color': attributes.backgroundColor,
+            style: `background-color: ${attributes.backgroundColor}`,
+          }
+        },
+      },
+    }
   },
 })
 
 const PageNode = Node.create({
   name: 'PageNode',
-  content: 'text*',
-  marks: 'bold italic strike code',
+  content: '(inline|text)*',
+  marks: '_',
   group: 'block',
   code: true,
   defining: true,
@@ -55,7 +106,7 @@ const PageNode = Node.create({
     // Return an object with attribute configuration
     return {
       class: {
-        default: 'page',
+        default: 'page pagebreak',
       },
     }
   },
@@ -102,6 +153,13 @@ export default {
         PageNode,
         TextAlign,
         StarterKit,
+        Highlight,
+        FontFamily,
+        Table,
+        TableRow,
+        TableCell,
+        CustomTableCell,
+        TableHeader,
       ],
     })
     window.editor = this.editor;
