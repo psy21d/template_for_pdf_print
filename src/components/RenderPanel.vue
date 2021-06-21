@@ -80,7 +80,7 @@ export default {
         style: css,
       })
       console.log(html)
-      postToServer(html)
+      postToServer({html})
     }
   }
 }
