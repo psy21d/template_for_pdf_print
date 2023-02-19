@@ -1,4 +1,4 @@
-# Hi! It's one-day-template, used tiptap+prosemirror
+# Hi! It's one-day-template, used tiptap + prosemirror
 
 https://blissful-thompson-07f0df.netlify.app/
 
