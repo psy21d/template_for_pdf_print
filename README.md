@@ -1,4 +1,6 @@
-# template
+# Hi! It's one-day-template, used tiptap+prosemirror
+
+Yes, its small MVP
 
 ## Project setup
 ```
