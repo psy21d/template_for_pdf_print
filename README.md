@@ -1,5 +1,7 @@
 # Hi! It's one-day-template, used tiptap+prosemirror
 
+https://blissful-thompson-07f0df.netlify.app/
+
 Yes, its small MVP
 
 ## Project setup
